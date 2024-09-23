@@ -1,4 +1,7 @@
-﻿namespace AppBuscaCepLocal
+﻿using AppBuscaCepLocal.Model;
+using AppBuscaCepLocal.Services;
+
+namespace AppBuscaCepLocal
 {
     public partial class MainPage : ContentPage
     {
@@ -9,17 +12,20 @@
             InitializeComponent();
         }
 
-        private void OnCounterClicked(object sender, EventArgs e)
+        private async void Button_Clicked(object sender, EventArgs e)
         {
-            count++;
+            try
+            {
+                Endereco? dados_endereco = await DataServiceCep.GetEnderecoByCep(txt_cep.Text);
 
-            if (count == 1)
-                CounterBtn.Text = $"Clicked {count} time";
-            else
-                CounterBtn.Text = $"Clicked {count} times";
+                BindingContext = dados_endereco;
 
-            SemanticScreenReader.Announce(CounterBtn.Text);
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Ops", ex.Message, "OK");
+            }
+
         }
     }
-
 }
